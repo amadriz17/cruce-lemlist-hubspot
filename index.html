@@ -20,3 +20,647 @@
     --teal-deep: #170F45;
     --teal-tint: #ECE9F7;
     --mint: #62E0D8;
+    --amber: #F4C94B;
+    --amber-deep: #8A6A10;
+    --amber-tint: #FDF3D6;
+    --green: #16A34A;
+    --green-tint: #E4F5EA;
+    --blue: #1E3A8A;
+    --blue-tint: #E8ECF8;
+    --red: #A23B2E;
+    --radius: 10px;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #150F2E; --surface: #1E1642; --line: #33285F; --ink: #ECEAF5;
+      --ink-soft: #A29CC2; --teal-tint: #241A57; --amber-tint: #2E2711;
+      --green-tint: #16281B; --blue-tint: #182150;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #150F2E; --surface: #1E1642; --line: #33285F; --ink: #ECEAF5;
+    --ink-soft: #A29CC2; --teal-tint: #241A57; --amber-tint: #2E2711;
+    --green-tint: #16281B; --blue-tint: #182150;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { padding: 32px 20px 80px; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace; }
+
+  header.top { margin-bottom: 36px; }
+  .eyebrow-row { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  h1 { font-size: 26px; font-weight: 700; margin: 6px 0 8px; letter-spacing: -0.01em; }
+  .lede { color: var(--ink-soft); font-size: 15px; line-height: 1.55; max-width: 62ch; }
+  .privacy-note {
+    margin-top: 14px; display:flex; gap:10px; align-items:flex-start;
+    background: var(--teal-tint); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 12px 14px; font-size: 13.5px; line-height: 1.5; color: var(--ink);
+  }
+  .privacy-note .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); margin-top: 6px; flex: none; }
+
+  .step {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px 22px 24px; margin-bottom: 18px;
+  }
+  .step[data-disabled="true"] { opacity: .45; pointer-events: none; }
+  .step-head { display:flex; align-items:center; gap: 12px; margin-bottom: 16px; }
+  .step-num {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--teal); color: #fff;
+    display:flex; align-items:center; justify-content:center; font-size: 13px; font-weight:600; flex: none;
+  }
+  .step-title { font-size: 16.5px; font-weight: 600; }
+  .step-sub { color: var(--ink-soft); font-size: 13px; margin-top: 2px; }
+
+  .dropzones { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .dropzones { grid-template-columns: 1fr; } }
+  .drop {
+    border: 1.5px dashed var(--line); border-radius: var(--radius); padding: 20px 16px;
+    text-align:center; cursor:pointer; transition: border-color .15s, background .15s;
+    position: relative; min-height: 132px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .drop:hover, .drop.drag { border-color: var(--teal); background: var(--teal-tint); }
+  .drop input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .drop .label { font-weight: 600; font-size: 14px; }
+  .drop .hint { color: var(--ink-soft); font-size: 12.5px; margin-top: 4px; }
+  .drop .file-ok { color: var(--teal); font-weight: 600; font-size: 13px; margin-top: 6px; }
+  .drop .file-ok .mono { font-size: 12px; color: var(--ink-soft); font-weight: 400; display:block; margin-top:2px; }
+  .drop svg { width: 22px; height: 22px; color: var(--ink-soft); margin-bottom: 8px; }
+
+  .map-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 640px) { .map-grid { grid-template-columns: 1fr; } }
+  .map-col h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 10px; color: var(--ink-soft); text-transform: none; }
+  .map-row { display:flex; align-items:center; gap: 10px; margin-bottom: 9px; }
+  .map-row label { width: 108px; flex: none; font-size: 13px; font-weight: 500; }
+  select {
+    width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); font-size: 13px; font-family: inherit;
+  }
+  select:focus, .drop:focus-within { outline: 2px solid var(--teal); outline-offset: 1px; }
+
+  button.primary {
+    background: var(--teal); color: #fff; border: none; border-radius: 8px;
+    padding: 11px 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  button.primary:hover { background: var(--teal-deep); }
+  button.primary:disabled { background: var(--ink-soft); cursor: not-allowed; }
+  button.ghost {
+    background: transparent; color: var(--teal); border: 1px solid var(--line); border-radius: 8px;
+    padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  button.ghost:hover { border-color: var(--teal); }
+  .actions-row { display:flex; gap: 12px; align-items:center; margin-top: 6px; flex-wrap: wrap; }
+  .warn-text { color: var(--red); font-size: 13px; margin-top: 8px; }
+
+  .summary { display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  @media (max-width: 720px) { .summary { grid-template-columns: 1fr 1fr; } }
+  .card { border-radius: var(--radius); padding: 14px 16px; border: 1px solid var(--line); }
+  .card .num { font-size: 24px; font-weight: 700; font-family: "IBM Plex Mono", monospace; }
+  .card .lbl { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+  .card.total { background: var(--surface); }
+  .card.exists { background: var(--green-tint); }
+  .card.new { background: var(--blue-tint); }
+  .card.review { background: var(--amber-tint); }
+
+  .filters { display:flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .filter-btn {
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    padding: 7px 13px; border-radius: 999px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .filter-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; min-width: 640px; }
+  thead th {
+    position: sticky; top: 0; background: var(--surface); text-align: left; padding: 9px 10px;
+    border-bottom: 1px solid var(--line); font-weight: 600; color: var(--ink-soft); white-space: nowrap;
+  }
+  tbody td { padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; max-width: 220px; overflow:hidden; text-overflow:ellipsis; }
+  tbody tr.row-review { background: var(--amber-tint); }
+  tbody tr.row-exists td.status-cell { color: var(--green); font-weight: 600; }
+  tbody tr.row-new td.status-cell { color: var(--blue); font-weight: 600; }
+  tbody tr.row-review td.status-cell { color: var(--amber-deep); font-weight: 600; }
+  tbody tr:hover { filter: brightness(0.97); }
+  .motivo-cell { color: var(--ink-soft); }
+
+  .download-row { display:flex; align-items:center; gap:14px; margin-top: 18px; flex-wrap: wrap; }
+  .footnote { color: var(--ink-soft); font-size: 12px; margin-top: 26px; text-align:center; }
+  .hidden { display:none !important; }
+  .spinner {
+    width:14px; height:14px; border-radius:50%; border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #fff; display:inline-block; animation: spin .7s linear infinite; vertical-align: -2px; margin-right:6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow-row"></div>
+    <h1>Cruce de contactos: Lemlist ↔ HubSpot</h1>
+    <p class="lede">Sube el export de HubSpot y el export de Lemlist, indica qué columna corresponde a cada dato, y la herramienta clasifica cada contacto de Lemlist en <strong>Ya existe en HubSpot</strong>, <strong>Nuevo</strong> o <strong>Revisar manualmente</strong>.</p>
+    <div class="privacy-note">
+      <span class="dot"></span>
+      <span>Todo el cruce se procesa dentro de tu navegador. Los archivos no se suben a ningún servidor — puedes usarlo las veces que necesites, con cualquier export.</span>
+    </div>
+  </header>
+
+  <!-- STEP 1: UPLOAD -->
+  <section class="step" id="step1">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Sube los dos archivos</div>
+        <div class="step-sub">Formatos aceptados: .xlsx, .xls, .csv</div>
+      </div>
+    </div>
+    <div class="dropzones">
+      <div class="drop" id="drop-hubspot" tabindex="0">
+        <input type="file" id="file-hubspot" accept=".xlsx,.xls,.csv">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+        <div class="label">Export de HubSpot</div>
+        <div class="hint">Clic o arrastra el archivo aquí</div>
+        <div class="file-ok" id="hubspot-ok"></div>
+      </div>
+      <div class="drop" id="drop-lemlist" tabindex="0">
+        <input type="file" id="file-lemlist" accept=".xlsx,.xls,.csv">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+        <div class="label">Export de Lemlist</div>
+        <div class="hint">Clic o arrastra el archivo aquí</div>
+        <div class="file-ok" id="lemlist-ok"></div>
+      </div>
+    </div>
+    <div class="warn-text hidden" id="upload-error"></div>
+  </section>
+
+  <!-- STEP 2: MAPPING -->
+  <section class="step" id="step2" data-disabled="true">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Indica qué columna corresponde a cada dato</div>
+        <div class="step-sub">Ya intentamos adivinarlo — revisa que esté correcto antes de continuar</div>
+      </div>
+    </div>
+    <div class="map-grid">
+      <div class="map-col">
+        <h3>Archivo de HubSpot</h3>
+        <div id="map-hubspot"></div>
+      </div>
+      <div class="map-col">
+        <h3>Archivo de Lemlist</h3>
+        <div id="map-lemlist"></div>
+      </div>
+    </div>
+    <div class="actions-row">
+      <button class="primary" id="btn-process">Procesar cruce</button>
+      <span class="warn-text hidden" id="map-error"></span>
+    </div>
+  </section>
+
+  <!-- STEP 3: RESULTS -->
+  <section class="step hidden" id="step3">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Resultado del cruce</div>
+        <div class="step-sub" id="dedup-note"></div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="card total"><div class="num" id="stat-total">0</div><div class="lbl">Contactos de Lemlist</div></div>
+      <div class="card exists"><div class="num" id="stat-exists">0</div><div class="lbl">Ya existen en HubSpot</div></div>
+      <div class="card new"><div class="num" id="stat-new">0</div><div class="lbl">Nuevos</div></div>
+      <div class="card review"><div class="num" id="stat-review">0</div><div class="lbl">Revisar manualmente</div></div>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="todos">Todos</button>
+      <button class="filter-btn" data-filter="Ya existe en HubSpot">Ya existe</button>
+      <button class="filter-btn" data-filter="Nuevo">Nuevo</button>
+      <button class="filter-btn" data-filter="Revisar manualmente">Revisar manualmente</button>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr id="table-head"></tr></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
+    <div class="download-row">
+      <button class="primary" id="btn-download"><span class="spinner hidden" id="dl-spinner"></span>Descargar Excel (.xlsx)</button>
+      <button class="ghost" id="btn-reset">Cargar otro cruce</button>
+    </div>
+  </section>
+
+  <p class="footnote">Filas en amarillo en el Excel = requieren revisión manual del equipo antes de cargarlas a HubSpot.</p>
+</div>
+
+<script>
+(function(){
+  const FIELDS = ['nombre','apellido','empresa','email','linkedin'];
+  const FIELD_LABELS = { nombre:'Nombre', apellido:'Apellido', empresa:'Empresa', email:'Email', linkedin:'LinkedIn URL' };
+  const GUESS_KEYWORDS = {
+    nombre: ['first name','firstname','nombre','name'],
+    apellido: ['last name','lastname','apellido','surname'],
+    empresa: ['company','empresa','organization','organización','account'],
+    email: ['email','e-mail','correo','mail'],
+    linkedin: ['linkedin','li url','profile url','perfil']
+  };
+
+  let state = {
+    hubspot: null,
+    lemlist: null,
+    hubspotMap: {},
+    lemlistMap: {}
+  };
+
+  function foldDiacritics(s) {
+    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+  function normText(t) {
+    return foldDiacritics((t == null ? '' : String(t)).trim().toLowerCase()).replace(/\s+/g,' ');
+  }
+  function normEmail(e) {
+    return (e == null ? '' : String(e)).trim().toLowerCase();
+  }
+  function normLI(u) {
+    if (u == null) return '';
+    let s = String(u).trim().toLowerCase();
+    if (!s) return '';
+    s = s.replace(/^https?:\/\//,'').replace(/^www\./,'');
+    s = s.split('?')[0].split('#')[0];
+    s = s.replace(/\/+$/,'');
+    return s;
+  }
+
+  function parseFile(file, cb) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, { type: 'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '', raw: false });
+        const cleanRows = rows.filter(r => r.some(c => String(c).trim() !== ''));
+        if (cleanRows.length < 2) { cb(null, 'El archivo no tiene datos suficientes (se esperaba encabezado + filas).'); return; }
+        const headers = cleanRows[0].map(h => String(h).trim());
+        const body = cleanRows.slice(1);
+        cb({ headers, rows: body }, null);
+      } catch (err) {
+        cb(null, 'No se pudo leer el archivo. Verifica que sea .xlsx, .xls o .csv válido.');
+      }
+    };
+    reader.onerror = function(){ cb(null, 'Error al leer el archivo.'); };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function guessMapping(headers) {
+    const map = {};
+    const lower = headers.map(h => h.toLowerCase());
+    FIELDS.forEach(field => {
+      let found = -1;
+      for (const kw of GUESS_KEYWORDS[field]) {
+        const idx = lower.findIndex(h => h.includes(kw));
+        if (idx !== -1) { found = idx; break; }
+      }
+      map[field] = found;
+    });
+    return map;
+  }
+
+  function setupDrop(dropId, inputId, side) {
+    const drop = document.getElementById(dropId);
+    const input = document.getElementById(inputId);
+    input.addEventListener('change', () => { if (input.files[0]) handleFile(input.files[0], side); });
+    drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('drag'));
+    drop.addEventListener('drop', e => {
+      e.preventDefault(); drop.classList.remove('drag');
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], side);
+    });
+  }
+
+  function handleFile(file, side) {
+    const errBox = document.getElementById('upload-error');
+    errBox.classList.add('hidden');
+    parseFile(file, (result, err) => {
+      if (err) {
+        errBox.textContent = `${side === 'hubspot' ? 'HubSpot' : 'Lemlist'}: ${err}`;
+        errBox.classList.remove('hidden');
+        return;
+      }
+      state[side] = result;
+      const okBox = document.getElementById(side + '-ok');
+      okBox.innerHTML = `✓ ${file.name}<span class="mono">${result.rows.length} filas · ${result.headers.length} columnas</span>`;
+      checkReadyForMapping();
+    });
+  }
+
+  function checkReadyForMapping() {
+    if (state.hubspot && state.lemlist) {
+      document.getElementById('step2').setAttribute('data-disabled', 'false');
+      renderMapping();
+    }
+  }
+
+  function renderMapping() {
+    state.hubspotMap = guessMapping(state.hubspot.headers);
+    state.lemlistMap = guessMapping(state.lemlist.headers);
+    renderMapCols('map-hubspot', state.hubspot.headers, state.hubspotMap, 'hubspotMap');
+    renderMapCols('map-lemlist', state.lemlist.headers, state.lemlistMap, 'lemlistMap');
+  }
+
+  function renderMapCols(containerId, headers, mapObj, stateKey) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    FIELDS.forEach(field => {
+      const row = document.createElement('div');
+      row.className = 'map-row';
+      const label = document.createElement('label');
+      label.textContent = FIELD_LABELS[field];
+      const select = document.createElement('select');
+      const emptyOpt = document.createElement('option');
+      emptyOpt.value = -1; emptyOpt.textContent = '— No disponible —';
+      select.appendChild(emptyOpt);
+      headers.forEach((h, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx; opt.textContent = h || `(columna ${idx+1})`;
+        if (mapObj[field] === idx) opt.selected = true;
+        select.appendChild(opt);
+      });
+      select.addEventListener('change', () => { state[stateKey][field] = parseInt(select.value, 10); });
+      row.appendChild(label); row.appendChild(select);
+      container.appendChild(row);
+    });
+  }
+
+  function buildRecord(headers, row, map) {
+    const get = (f) => { const idx = map[f]; return (idx == null || idx < 0) ? '' : (row[idx] != null ? row[idx] : ''); };
+    const raw = { nombre: get('nombre'), apellido: get('apellido'), empresa: get('empresa'), email: get('email'), linkedin: get('linkedin') };
+    return {
+      raw,
+      nEmail: normEmail(raw.email),
+      nLi: normLI(raw.linkedin),
+      nNombre: normText(raw.nombre),
+      nApellido: normText(raw.apellido),
+      nEmpresa: normText(raw.empresa),
+      row
+    };
+  }
+
+  function ncKey(rec) { return `${rec.nNombre}|${rec.nApellido}|${rec.nEmpresa}`; }
+
+  function dedupe(headers, rows, map) {
+    const seen = new Set();
+    const kept = [];
+    let removed = 0;
+    rows.forEach(row => {
+      const rec = buildRecord(headers, row, map);
+      const key = `${rec.nEmail}||${rec.nLi}||${ncKey(rec)}`;
+      if (seen.has(key)) { removed++; return; }
+      seen.add(key);
+      kept.push(row);
+    });
+    return { rows: kept, removed };
+  }
+
+  function buildIndices(headers, rows, map) {
+    const byEmail = new Map(), byLi = new Map(), byNc = new Map();
+    const records = rows.map(row => buildRecord(headers, row, map));
+    records.forEach(rec => {
+      if (rec.nEmail) { if (!byEmail.has(rec.nEmail)) byEmail.set(rec.nEmail, []); byEmail.get(rec.nEmail).push(rec); }
+      if (rec.nLi) { if (!byLi.has(rec.nLi)) byLi.set(rec.nLi, []); byLi.get(rec.nLi).push(rec); }
+      const nc = ncKey(rec);
+      if (rec.nNombre && rec.nApellido && rec.nEmpresa) { if (!byNc.has(nc)) byNc.set(nc, []); byNc.get(nc).push(rec); }
+    });
+    return { byEmail, byLi, byNc };
+  }
+
+  function classify(lemRec, indices) {
+    const candidates = [];
+    const pushAll = (arr) => { if (arr) arr.forEach(c => { if (!candidates.includes(c)) candidates.push(c); }); };
+    pushAll(indices.byEmail.get(lemRec.nEmail));
+    pushAll(indices.byLi.get(lemRec.nLi));
+    if (lemRec.nNombre && lemRec.nApellido && lemRec.nEmpresa) pushAll(indices.byNc.get(ncKey(lemRec)));
+
+    if (candidates.length === 0) {
+      return { status: 'Nuevo', motivo: 'Sin coincidencia con ningún contacto de HubSpot' };
+    }
+
+    for (const h of candidates) {
+      const emailMatch = (lemRec.nEmail && h.nEmail) ? (lemRec.nEmail === h.nEmail) : null;
+      const liMatch = (lemRec.nLi && h.nLi) ? (lemRec.nLi === h.nLi) : null;
+      const ncMatch = !!(lemRec.nNombre && lemRec.nApellido && lemRec.nEmpresa &&
+                          lemRec.nNombre === h.nNombre && lemRec.nApellido === h.nApellido && lemRec.nEmpresa === h.nEmpresa);
+
+      if (emailMatch === true && liMatch !== false) {
+        return { status: 'Ya existe en HubSpot', motivo: liMatch === true ? 'Email y LinkedIn coinciden' : 'Email coincide (identificador único)' };
+      }
+      if (liMatch === true && emailMatch !== false) {
+        return { status: 'Ya existe en HubSpot', motivo: 'URL de LinkedIn coincide (identificador único)' };
+      }
+      if (ncMatch && emailMatch !== false && liMatch !== false) {
+        return { status: 'Ya existe en HubSpot', motivo: 'Nombre, apellido y empresa coinciden' };
+      }
+      if (emailMatch === true && liMatch === false) {
+        return { status: 'Revisar manualmente', motivo: 'Mismo email pero LinkedIn distinta' };
+      }
+      if (liMatch === true && emailMatch === false) {
+        return { status: 'Revisar manualmente', motivo: 'Misma LinkedIn pero email distinto' };
+      }
+      if (ncMatch && emailMatch === false) {
+        return { status: 'Revisar manualmente', motivo: 'Mismo nombre y empresa pero email distinto' };
+      }
+    }
+    return { status: 'Revisar manualmente', motivo: 'Coincidencia parcial detectada, requiere revisión' };
+  }
+
+  let results = null;
+
+  function process() {
+    const mapErr = document.getElementById('map-error');
+    mapErr.classList.add('hidden');
+    if (state.hubspotMap.email < 0 && state.hubspotMap.linkedin < 0 && (state.hubspotMap.nombre < 0 || state.hubspotMap.apellido < 0 || state.hubspotMap.empresa < 0)) {
+      mapErr.textContent = 'En HubSpot necesitas mapear al menos Email, LinkedIn URL, o Nombre+Apellido+Empresa.';
+      mapErr.classList.remove('hidden');
+      return;
+    }
+    if (state.lemlistMap.email < 0 && state.lemlistMap.linkedin < 0 && (state.lemlistMap.nombre < 0 || state.lemlistMap.apellido < 0 || state.lemlistMap.empresa < 0)) {
+      mapErr.textContent = 'En Lemlist necesitas mapear al menos Email, LinkedIn URL, o Nombre+Apellido+Empresa.';
+      mapErr.classList.remove('hidden');
+      return;
+    }
+
+    const hDedup = dedupe(state.hubspot.headers, state.hubspot.rows, state.hubspotMap);
+    const lDedup = dedupe(state.lemlist.headers, state.lemlist.rows, state.lemlistMap);
+
+    const indices = buildIndices(state.hubspot.headers, hDedup.rows, state.hubspotMap);
+
+    const classified = lDedup.rows.map(row => {
+      const rec = buildRecord(state.lemlist.headers, row, state.lemlistMap);
+      const { status, motivo } = classify(rec, indices);
+      return { cells: row, status, motivo };
+    });
+
+    results = {
+      headers: state.lemlist.headers,
+      rows: classified,
+      hDedupRemoved: hDedup.removed,
+      lDedupRemoved: lDedup.removed
+    };
+
+    renderResults();
+  }
+
+  function renderResults() {
+    document.getElementById('step3').classList.remove('hidden');
+    const total = results.rows.length;
+    const exists = results.rows.filter(r => r.status === 'Ya existe en HubSpot').length;
+    const news = results.rows.filter(r => r.status === 'Nuevo').length;
+    const review = results.rows.filter(r => r.status === 'Revisar manualmente').length;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-exists').textContent = exists;
+    document.getElementById('stat-new').textContent = news;
+    document.getElementById('stat-review').textContent = review;
+
+    const notes = [];
+    if (results.lDedupRemoved) notes.push(`${results.lDedupRemoved} duplicado(s) removido(s) del archivo de Lemlist`);
+    if (results.hDedupRemoved) notes.push(`${results.hDedupRemoved} duplicado(s) removido(s) del archivo de HubSpot`);
+    document.getElementById('dedup-note').textContent = notes.length ? notes.join(' · ') : 'Sin duplicados internos detectados';
+
+    renderTable('todos');
+    document.getElementById('step3').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderTable(filter) {
+    const thead = document.getElementById('table-head');
+    const tbody = document.getElementById('table-body');
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+    const headers = [...results.headers, 'Estado del cruce', 'Motivo'];
+    headers.forEach(h => {
+      const th = document.createElement('th'); th.textContent = h; thead.appendChild(th);
+    });
+    const rows = filter === 'todos' ? results.rows : results.rows.filter(r => r.status === filter);
+    const rowClass = { 'Ya existe en HubSpot': 'row-exists', 'Nuevo': 'row-new', 'Revisar manualmente': 'row-review' };
+    rows.slice(0, 500).forEach(r => {
+      const tr = document.createElement('tr');
+      tr.className = rowClass[r.status] || '';
+      r.cells.forEach(c => { const td = document.createElement('td'); td.textContent = c; tr.appendChild(td); });
+      for (let i = r.cells.length; i < results.headers.length; i++) { const td = document.createElement('td'); tr.appendChild(td); }
+      const tdStatus = document.createElement('td'); tdStatus.textContent = r.status; tdStatus.className = 'status-cell'; tr.appendChild(tdStatus);
+      const tdMotivo = document.createElement('td'); tdMotivo.textContent = r.motivo; tdMotivo.className = 'motivo-cell'; tr.appendChild(tdMotivo);
+      tbody.appendChild(tr);
+    });
+    if (rows.length > 500) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td'); td.colSpan = headers.length;
+      td.style.textAlign = 'center'; td.style.color = 'var(--ink-soft)'; td.style.padding = '12px';
+      td.textContent = `Mostrando 500 de ${rows.length} filas — el Excel descargado incluye todas.`;
+      tr.appendChild(td); tbody.appendChild(tr);
+    }
+  }
+
+  async function downloadExcel() {
+    const btn = document.getElementById('btn-download');
+    const spinner = document.getElementById('dl-spinner');
+    btn.disabled = true; spinner.classList.remove('hidden');
+    try {
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('Cruce Lemlist-HubSpot');
+      const headers = [...results.headers, 'Estado del cruce', 'Motivo'];
+      ws.addRow(headers);
+      const headerRow = ws.getRow(1);
+      headerRow.font = { bold: true, color: { argb: 'FF1D1C19' } };
+      headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEDEBE1' } };
+      headerRow.eachCell(cell => { cell.border = { bottom: { style: 'thin', color: { argb: 'FFD8D4C6' } } }; });
+      ws.views = [{ state: 'frozen', ySplit: 1 }];
+
+      const amberFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCE383' } };
+      const statusColors = {
+        'Ya existe en HubSpot': 'FF16A34A',
+        'Nuevo': 'FF1E3A8A',
+        'Revisar manualmente': 'FF8A6A10'
+      };
+
+      results.rows.forEach(r => {
+        const rowValues = [...r.cells];
+        while (rowValues.length < results.headers.length) rowValues.push('');
+        rowValues.push(r.status, r.motivo);
+        const row = ws.addRow(rowValues);
+        if (r.status === 'Revisar manualmente') {
+          row.eachCell({ includeEmpty: true }, cell => { cell.fill = amberFill; });
+        }
+        const statusCell = row.getCell(headers.length - 1);
+        statusCell.font = { bold: true, color: { argb: statusColors[r.status] || 'FF1D1C19' } };
+      });
+
+      ws.columns.forEach((col, i) => {
+        let max = (headers[i] || '').length;
+        results.rows.forEach(r => {
+          const v = i < r.cells.length ? r.cells[i] : (i === headers.length - 2 ? r.status : i === headers.length - 1 ? r.motivo : '');
+          if (v && String(v).length > max) max = String(v).length;
+        });
+        col.width = Math.min(Math.max(max + 2, 10), 45);
+      });
+
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const ts = new Date();
+      const pad = n => String(n).padStart(2,'0');
+      const fname = `cruce_lemlist_hubspot_${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}_${pad(ts.getHours())}${pad(ts.getMinutes())}.xlsx`;
+      a.href = url; a.download = fname;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    } catch (err) {
+      alert('Ocurrió un error generando el Excel. Intenta nuevamente.');
+      console.error(err);
+    } finally {
+      btn.disabled = false; spinner.classList.add('hidden');
+    }
+  }
+
+  function resetAll() {
+    state = { hubspot: null, lemlist: null, hubspotMap: {}, lemlistMap: {} };
+    results = null;
+    document.getElementById('file-hubspot').value = '';
+    document.getElementById('file-lemlist').value = '';
+    document.getElementById('hubspot-ok').innerHTML = '';
+    document.getElementById('lemlist-ok').innerHTML = '';
+    document.getElementById('step2').setAttribute('data-disabled', 'true');
+    document.getElementById('step3').classList.add('hidden');
+    document.getElementById('map-hubspot').innerHTML = '';
+    document.getElementById('map-lemlist').innerHTML = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  setupDrop('drop-hubspot', 'file-hubspot', 'hubspot');
+  setupDrop('drop-lemlist', 'file-lemlist', 'lemlist');
+  document.getElementById('btn-process').addEventListener('click', process);
+  document.getElementById('btn-download').addEventListener('click', downloadExcel);
+  document.getElementById('btn-reset').addEventListener('click', resetAll);
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTable(btn.dataset.filter);
+    });
+  });
+})();
+</script>
+</body>
+</html>
